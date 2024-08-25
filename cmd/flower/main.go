@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 
 	tea "github.com/charmbracelet/bubbletea"
@@ -51,22 +50,12 @@ func main() {
 
 	db, err := database.NewDB()
 	if err != nil {
-		panic("oh no")
+		panic("db initialization failed")
 	}
-
-	r, err := db.Exec(`
-        CREATE TABLE "times" (
-            "id" INTEGER,
-            "duration" INTEGER,
-            "created" DATE,
-            "breaks_total_time" INTEGER,
-            "logs" TEXT,
-            PRIMARY KEY("id" AUTOINCREMENT)
-        )
-    `)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	fmt.Println(r)
+	defer func() {
+		err := db.Close()
+		if err != nil {
+			log.Fatal(err)
+		}
+	}()
 }
