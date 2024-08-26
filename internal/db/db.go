@@ -2,6 +2,7 @@ package db
 
 import (
 	"database/sql"
+	_ "embed"
 	"errors"
 	"fmt"
 
@@ -28,6 +29,12 @@ type DB struct {
 	Logs   *LogsTable
 }
 
+//go:embed timers.sql
+var timersSQL string
+
+//go:embed logs.sql
+var logsSQL string
+
 func NewDB() (*DB, error) {
 	_db, err := openDB("sqlite3")
 	if err != nil {
@@ -37,11 +44,11 @@ func NewDB() (*DB, error) {
 	tables := make(map[string]Tabler)
 	timersTable := &TimersTable{
 		DB:  _db,
-		dot: mustLoadDotsql("internal/db/timers.sql"),
+		dot: mustLoadDotsql(timersSQL),
 	}
 	logsTable := &LogsTable{
 		DB:  _db,
-		dot: mustLoadDotsql("internal/db/logs.sql"),
+		dot: mustLoadDotsql(logsSQL),
 	}
 	tables["timers"] = timersTable
 	tables["logs"] = logsTable
@@ -85,8 +92,8 @@ func (db *DB) DropTables() error {
 	return nil
 }
 
-func mustLoadDotsql(path string) *dotsql.DotSql {
-	dot, err := dotsql.LoadFromFile(path)
+func mustLoadDotsql(sqlString string) *dotsql.DotSql {
+	dot, err := dotsql.LoadFromString(sqlString)
 	if err != nil {
 		panic(err)
 	}
