@@ -6,6 +6,7 @@ require (
 	github.com/adrg/xdg v0.5.0
 	github.com/charmbracelet/bubbletea v0.27.1
 	github.com/mattn/go-sqlite3 v1.14.22
+	github.com/qustavo/dotsql v1.2.0
 )
 
 require (
@@ -23,7 +24,6 @@ require (
 	github.com/muesli/ansi v0.0.0-20230316100256-276c6243b2f6 // indirect
 	github.com/muesli/cancelreader v0.2.2 // indirect
 	github.com/muesli/termenv v0.15.2 // indirect
-	github.com/qustavo/dotsql v1.2.0 // indirect
 	github.com/rivo/uniseg v0.4.7 // indirect
 	github.com/xo/terminfo v0.0.0-20220910002029-abceb7e1c41e // indirect
 	golang.org/x/sync v0.8.0 // indirect
