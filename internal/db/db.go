@@ -23,43 +23,66 @@ type Tabler interface {
 
 type DB struct {
 	*sql.DB
-	tables []Tabler
+	tables map[string]Tabler
+	Timers *TimersTable
+	Logs   *LogsTable
 }
 
 func NewDB() (*DB, error) {
-	db, err := openDB("sqlite3")
+	_db, err := openDB("sqlite3")
 	if err != nil {
 		return nil, err
 	}
 
+	tables := make(map[string]Tabler)
 	timersTable := &TimersTable{
-		DB:  db,
+		DB:  _db,
 		dot: mustLoadDotsql("internal/db/timers.sql"),
 	}
 	logsTable := &LogsTable{
-		DB:  db,
+		DB:  _db,
 		dot: mustLoadDotsql("internal/db/logs.sql"),
 	}
+	tables["timers"] = timersTable
+	tables["logs"] = logsTable
 
-	tables := []Tabler{
+	db := &DB{
+		_db,
+		tables,
 		timersTable,
 		logsTable,
 	}
 
-	for _, table := range tables {
+	// create tables if they don't exist
+	db.CreateTables()
+
+	return db, nil
+}
+
+func (db *DB) CreateTables() error {
+	for _, table := range db.tables {
 		if !table.TableExists() {
 			_, err := table.CreateTable()
 			if err != nil {
-				println(err.Error())
-				return nil, err
+				return err
 			}
 		}
 	}
 
-	return &DB{
-		db,
-		tables,
-	}, nil
+	return nil
+}
+
+func (db *DB) DropTables() error {
+	for _, table := range db.tables {
+		if table.TableExists() {
+			_, err := table.DropTable()
+			if err != nil {
+				return err
+			}
+		}
+	}
+
+	return nil
 }
 
 func mustLoadDotsql(path string) *dotsql.DotSql {
@@ -102,4 +125,13 @@ func DataFilePath() (string, error) {
 	}
 
 	return path, nil
+}
+
+func mustGetInsertId(res sql.Result) int64 {
+	id, err := res.LastInsertId()
+	if err != nil {
+		panic(err)
+	}
+
+	return id
 }

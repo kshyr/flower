@@ -6,6 +6,8 @@ import (
 	database "github.com/kshyr/flower/internal/db"
 )
 
+const Ffffff = "d"
+
 func main() {
 	db, err := database.NewDB()
 	if err != nil {

@@ -1,7 +1,10 @@
-.DEFAULT_GOAL := run
+.DEFAULT_GOAL := dev
+
+dev:
+	go run -tags dev .
 
 run:
-	go run cmd/flower/main.go
+	go run -tags prod .
 
 dbm:
 	go run cmd/dbmanager/main.go
