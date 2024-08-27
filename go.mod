@@ -1,4 +1,4 @@
-module github.com/kshyr/flower v0.1.0
+module github.com/kshyr/flower
 
 go 1.22.5
 
