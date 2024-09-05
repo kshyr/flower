@@ -1,11 +1,10 @@
 package app
 
 import (
-	"fmt"
 	"log"
-	"strings"
 
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/kshyr/flower/internal/client"
 	"github.com/kshyr/flower/internal/config"
 	database "github.com/kshyr/flower/internal/db"
 )
@@ -49,11 +48,10 @@ type devEnv struct{}
 var dev devEnv
 
 func Run() {
-	conf, err := config.NewConfig()
+	cfg, err := config.NewConfig()
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Printf("Hi %s!\n", conf.UserName)
 
 	f, err := tea.LogToFile("debug.log", "debug")
 	if err != nil {
@@ -77,31 +75,5 @@ func Run() {
 		db.CreateTables()
 	}
 
-	id, err := db.Timers.Add("timer1", 10)
-	if err != nil {
-		panic("timer1 insert failed")
-	}
-
-	_, err = db.Logs.Add("hey it's my log1 for timer1", id)
-	if err != nil {
-		panic("log1 insert failed")
-	}
-
-	_, err = db.Logs.Add("hey it's my log2 for timer1", id)
-	if err != nil {
-		panic("log2 insert failed")
-	}
-
-	logs, err := db.Logs.GetAll()
-	if err != nil {
-		log.Fatal("oops:", err)
-	}
-
-	msgs := make([]string, len(logs))
-	for i, log := range logs {
-		msgs[i] = log.Message
-	}
-
-	msgsString := strings.Join(msgs, ", ")
-	fmt.Println(msgsString)
+	client.Run(cfg, db)
 }

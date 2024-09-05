@@ -2,7 +2,6 @@ package config
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"os/user"
 	"strings"
@@ -12,8 +11,10 @@ import (
 )
 
 const (
-	targetConfigDir      = "flower"
-	targetConfigFileName = "flower.toml"
+	AppName              = "flower"
+	targetConfigDir      = AppName
+	targetConfigFileName = AppName + ".toml"
+	fallbackUserName     = AppName
 )
 
 type Config struct {
@@ -25,12 +26,10 @@ func NewConfig() (Config, error) {
 	if err != nil {
 		return Config{}, err
 	}
-	fmt.Println(configPath)
 
 	var config Config
 	if configExists(configPath) {
-		meta, err := toml.DecodeFile(configPath, &config)
-		fmt.Println(meta)
+		_, err := toml.DecodeFile(configPath, &config)
 		if err != nil {
 			return Config{}, err
 		}
@@ -51,8 +50,13 @@ func NewConfig() (Config, error) {
 }
 
 func defaultConfig() Config {
+	userName, err := getOsUserFirstName()
+	if err != nil {
+		userName = fallbackUserName
+	}
+
 	return Config{
-		UserName: GetOsUserFirstName(),
+		UserName: userName,
 	}
 }
 
@@ -65,13 +69,13 @@ func getValidConfigPath() (string, error) {
 	return path, nil
 }
 
-func GetOsUserFirstName() string {
+func getOsUserFirstName() (string, error) {
 	currentUser, err := user.Current()
 	if err != nil {
-		log.Fatal("couldn't fetch current user")
+		return "", err
 	}
 
-	return strings.Split(currentUser.Name, " ")[0]
+	return strings.Split(currentUser.Name, " ")[0], nil
 }
 
 func configExists(configPath string) bool {

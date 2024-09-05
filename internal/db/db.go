@@ -6,13 +6,14 @@ import (
 	"fmt"
 
 	"github.com/adrg/xdg"
+	"github.com/kshyr/flower/internal/config"
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/qustavo/dotsql"
 )
 
 const (
-	targetDataDir      = "flower"
-	targetDataFileName = "flower.db"
+	targetDataDir      = config.AppName
+	targetDataFileName = config.AppName + ".db"
 )
 
 type Tabler interface {

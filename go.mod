@@ -3,14 +3,16 @@ module github.com/kshyr/flower
 go 1.22.5
 
 require (
+	github.com/BurntSushi/toml v1.4.0
 	github.com/adrg/xdg v0.5.0
+	github.com/charmbracelet/bubbles v0.19.0
 	github.com/charmbracelet/bubbletea v0.27.1
 	github.com/mattn/go-sqlite3 v1.14.22
 	github.com/qustavo/dotsql v1.2.0
 )
 
 require (
-	github.com/BurntSushi/toml v1.4.0 // indirect
+	github.com/atotto/clipboard v0.1.4 // indirect
 	github.com/aymanbagabas/go-osc52/v2 v2.0.1 // indirect
 	github.com/charmbracelet/lipgloss v0.13.0 // indirect
 	github.com/charmbracelet/x/ansi v0.1.4 // indirect
