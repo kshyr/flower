@@ -3,7 +3,6 @@ package db
 import (
 	"database/sql"
 	_ "embed"
-	"errors"
 	"fmt"
 
 	"github.com/adrg/xdg"
@@ -75,7 +74,6 @@ func (db *DB) CreateTables() error {
 			}
 		}
 	}
-
 	return nil
 }
 
@@ -88,7 +86,6 @@ func (db *DB) DropTables() error {
 			}
 		}
 	}
-
 	return nil
 }
 
@@ -97,12 +94,11 @@ func mustLoadDotsql(sqlString string) *dotsql.DotSql {
 	if err != nil {
 		panic(err)
 	}
-
 	return dot
 }
 
 func openDB(driverName string) (*sql.DB, error) {
-	path, err := DataFilePath()
+	path, err := getDataFilePath()
 	if err != nil {
 		return nil, err
 	}
@@ -117,20 +113,12 @@ func openDB(driverName string) (*sql.DB, error) {
 	return db, nil
 }
 
-func targetDataFilePath() string {
-	return fmt.Sprintf("%s/%s", targetDataDir, targetDataFileName)
-}
-
-func DataFilePath() (string, error) {
-	path, err := xdg.DataFile(targetDataFilePath())
+func getDataFilePath() (string, error) {
+	targetPath := fmt.Sprintf("%s/%s", targetDataDir, targetDataFileName)
+	path, err := xdg.DataFile(targetPath)
 	if err != nil {
 		return "", err
 	}
-
-	if path != fmt.Sprintf("%s/%s", xdg.DataHome, targetDataFilePath()) {
-		return "", errors.New("resolved data file path contra")
-	}
-
 	return path, nil
 }
 
@@ -139,6 +127,5 @@ func mustGetInsertId(res sql.Result) int64 {
 	if err != nil {
 		panic(err)
 	}
-
 	return id
 }

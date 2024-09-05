@@ -49,7 +49,11 @@ type devEnv struct{}
 var dev devEnv
 
 func Run() {
-	fmt.Printf("Hi %s!\n", config.GetUserFirstName())
+	conf, err := config.NewConfig()
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("Hi %s!\n", conf.UserName)
 
 	f, err := tea.LogToFile("debug.log", "debug")
 	if err != nil {
@@ -68,7 +72,10 @@ func Run() {
 		}
 	}()
 
-	dev.recreateTables(db)
+	if config.Debug {
+		db.DropTables()
+		db.CreateTables()
+	}
 
 	id, err := db.Timers.Add("timer1", 10)
 	if err != nil {

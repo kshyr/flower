@@ -1,10 +1,10 @@
-.DEFAULT_GOAL := dev
+.DEFAULT_GOAL := debug
 
-dev:
-	go run -tags dev .
+debug:
+	FLDEBUG=1 go run .
 
-run:
-	go run -tags prod .
+release:
+	go run .
 
 dbm:
 	go run cmd/dbmanager/main.go
