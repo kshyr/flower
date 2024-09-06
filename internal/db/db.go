@@ -12,8 +12,9 @@ import (
 )
 
 const (
-	targetDataDir      = config.AppName
-	targetDataFileName = config.AppName + ".db"
+	targetDataDir             = config.AppName
+	targetDebugDataFileName   = config.AppName + ".debug.db"
+	targetReleaseDataFileName = config.AppName + ".db"
 )
 
 type Tabler interface {
@@ -115,6 +116,10 @@ func openDB(driverName string) (*sql.DB, error) {
 }
 
 func getDataFilePath() (string, error) {
+	targetDataFileName := targetReleaseDataFileName
+	if config.Debug {
+		targetDataFileName = targetDebugDataFileName
+	}
 	targetPath := fmt.Sprintf("%s/%s", targetDataDir, targetDataFileName)
 	path, err := xdg.DataFile(targetPath)
 	if err != nil {
