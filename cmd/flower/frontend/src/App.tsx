@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { HashRouter, Route, Routes } from "react-router-dom";
 import logo from "./assets/images/logo-universal.png";
 import { Greet } from "../wailsjs/go/main/App";
 import Dashboard from "./components/dashboard";
@@ -15,7 +16,13 @@ function App() {
     Greet(name).then(updateResultText);
   }
 
-  return <Dashboard />;
+  return (
+    <HashRouter future={{ v7_startTransition: true }}>
+      <Routes>
+        <Route path="/" element={<Dashboard />} />
+      </Routes>
+    </HashRouter>
+  );
 }
 
 export default App;

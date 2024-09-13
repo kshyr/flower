@@ -374,6 +374,21 @@ export default function Dashboard() {
                     onChange={handleInputChange}
                     required
                   />
+                  <Select
+                    name="type"
+                    onValueChange={(value) =>
+                      setNewTransaction({ ...newTransaction, type: value })
+                    }
+                    required
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Transaction Type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Income">Income</SelectItem>
+                      <SelectItem value="Expense">Expense</SelectItem>
+                    </SelectContent>
+                  </Select>
                   <Button type="submit">Add Transaction</Button>
                 </form>
               </CardContent>
