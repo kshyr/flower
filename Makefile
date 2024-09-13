@@ -1,10 +1,19 @@
-.DEFAULT_GOAL := debug
+.DEFAULT_GOAL := cli-debug
 
-debug:
-	FLDEBUG=1 go run .
+RUN_GUI = cd cmd/flower && wails dev
+RUN_CLI = go run ./cmd/flwr $(ARGS)
 
-release:
-	go run .
+gui: gui-debug
+cli: cli-debug
 
-dbm:
-	go run cmd/dbmanager/main.go
+gui-debug:
+	FLDEBUG=1 $(RUN_GUI)
+
+cli-debug:
+	FLDEBUG=1 $(RUN_CLI)
+
+gui-release:
+	$(RUN_GUI)
+
+cli-release:
+	$(RUN_CLI)

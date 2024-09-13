@@ -1,1 +1,3 @@
-debug.log
+cmd/flower/build/bin
+cmd/flower/frontend/node_modules
+cmd/flower/frontend/dist
