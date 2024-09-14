@@ -4,6 +4,9 @@ import {
   Pie,
   Cell,
   LineChart,
+  AreaChart,
+  Area,
+  CartesianGrid,
   Line,
   XAxis,
   YAxis,
@@ -11,7 +14,14 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import {
   Table,
   TableBody,
@@ -31,6 +41,12 @@ import {
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import {
+  ChartConfig,
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from "@/components/ui/chart";
+import {
   DollarSign,
   TrendingUp,
   TrendingDown,
@@ -42,6 +58,8 @@ import {
   AlertCircle,
   Flower,
 } from "lucide-react";
+import { ModeToggle } from "./mode-toggle";
+import { useTheme } from "./theme-provider";
 
 // Mock data - replace with actual data from Beancount file in a real application
 const initialData = {
@@ -89,10 +107,28 @@ const initialData = {
     { type: "info", message: "Upcoming bill: Electricity $120 due in 3 days" },
   ],
 };
-
+const chartData = [
+  { month: "January", desktop: 186, mobile: 80 },
+  { month: "February", desktop: 305, mobile: 200 },
+  { month: "March", desktop: 237, mobile: 120 },
+  { month: "April", desktop: 73, mobile: 190 },
+  { month: "May", desktop: 209, mobile: 130 },
+  { month: "June", desktop: 214, mobile: 140 },
+];
+const chartConfig = {
+  desktop: {
+    label: "Desktop",
+    color: "hsl(var(--chart-1))",
+  },
+  mobile: {
+    label: "Mobile",
+    color: "hsl(var(--chart-2))",
+  },
+} satisfies ChartConfig;
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 
 export default function Dashboard() {
+  const { theme } = useTheme();
   const [data, setData] = useState(initialData);
   const [newTransaction, setNewTransaction] = useState({
     date: "",
@@ -138,11 +174,11 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="flex h-screen max-h-screen bg-gray-100">
+    <div className="flex h-screen max-h-screen bg-background">
       {/* Thin Sidebar Navigation */}
-      <aside className="max-h-screen sticky top-0 w-16 bg-white shadow-md flex flex-col items-center py-4">
-        <div className="mb-8">
-          <Flower className="h-8 w-8 text-purple-600" />
+      <aside className="max-h-screen sticky top-0 w-16 bg-card shadow-md flex flex-col items-center py-4">
+        <div className="mb-8 flex flex-col gap-4">
+          <Flower className="h-8 w-8 text-primary" />
         </div>
         <nav className="flex flex-col items-center space-y-4">
           {[
@@ -156,129 +192,151 @@ export default function Dashboard() {
               onClick={() => setActivePage(item.id)}
               className={`p-2 rounded-lg ${
                 activePage === item.id
-                  ? "bg-purple-100 text-purple-600"
-                  : "text-gray-600 hover:bg-gray-100"
+                  ? "bg-accent text-accent-foreground"
+                  : "text-muted-foreground hover:bg-muted"
               }`}
             >
               <item.icon className="w-6 h-6" />
             </button>
           ))}
         </nav>
+        <div className="mt-auto">
+          <ModeToggle />
+        </div>
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 h-full max-h-screen overflow-y-scroll bg-gray-100 p-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex justify-between items-center mb-6">
-            <h1 className="text-3xl font-semibold text-gray-800">
-              Flower Dashboard
-            </h1>
-            <Badge variant="outline" className="text-sm">
-              Beancount File: financial_data.beancount
-            </Badge>
-          </div>
+      <main className="flex-1 h-full max-h-screen overflow-y-scroll bg-background p-6">
+        <div className="bg-background text-foreground p-6">
+          <h1 className="text-3xl font-bold mb-6">Flower Dashboard</h1>
 
-          {/* Alerts Section */}
-          <div className="mb-6">
-            {data.alerts.map((alert, index) => (
-              <div
-                key={index}
-                className={`flex items-center p-4 mb-2 rounded-lg ${
-                  alert.type === "warning"
-                    ? "bg-yellow-100 text-yellow-700"
-                    : "bg-blue-100 text-blue-700"
-                }`}
-              >
-                <AlertCircle className="h-5 w-5 mr-2" />
-                <span>{alert.message}</span>
-              </div>
-            ))}
-          </div>
+          {data.alerts.map((alert, index) => (
+            <div
+              key={index}
+              className="bg-destructive text-destructive-foreground p-4 rounded-lg mb-4"
+            >
+              <AlertCircle className="inline-block mr-2" />
+              {alert.message}
+            </div>
+          ))}
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Net Worth</CardTitle>
-                <DollarSign className="h-4 w-4 text-muted-foreground" />
+              <CardHeader>
+                <CardTitle>Net Worth</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">
+                <div className="text-4xl font-bold">
                   ${(data.assets - data.liabilities).toLocaleString()}
                 </div>
-                <p className="text-xs text-muted-foreground">
-                  +$1,000 from last month
-                </p>
+                <p className="text-muted-foreground">+$1,000 from last month</p>
               </CardContent>
             </Card>
+
             <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
-                  Total Assets
-                </CardTitle>
-                <TrendingUp className="h-4 w-4 text-muted-foreground" />
+              <CardHeader>
+                <CardTitle>Total Assets</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">
+                <div className="text-4xl font-bold">
                   ${data.assets.toLocaleString()}
                 </div>
               </CardContent>
             </Card>
+
             <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
-                  Total Liabilities
-                </CardTitle>
-                <TrendingDown className="h-4 w-4 text-muted-foreground" />
+              <CardHeader>
+                <CardTitle>Total Liabilities</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">
+                <div className="text-4xl font-bold">
                   ${data.liabilities.toLocaleString()}
                 </div>
               </CardContent>
             </Card>
+
             <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
-                  Monthly Cash Flow
-                </CardTitle>
-                <PiggyBank className="h-4 w-4 text-muted-foreground" />
+              <CardHeader>
+                <CardTitle>Monthly Cash Flow</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">
+                <div className="text-4xl font-bold">
                   ${(data.income - data.expenses).toLocaleString()}
                 </div>
               </CardContent>
             </Card>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
             <Card>
               <CardHeader>
-                <CardTitle>Net Worth Trend</CardTitle>
+                <CardTitle>Area Chart - Stacked</CardTitle>
+                <CardDescription>
+                  Showing total visitors for the last 6 months
+                </CardDescription>
               </CardHeader>
-              <CardContent className="h-[300px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={data.netWorthHistory}>
-                    <XAxis dataKey="date" />
-                    <YAxis />
-                    <Tooltip />
-                    <Legend />
-                    <Line
-                      type="monotone"
-                      dataKey="value"
-                      stroke="#8884d8"
-                      activeDot={{ r: 8 }}
+              <CardContent>
+                <ChartContainer config={chartConfig}>
+                  <AreaChart
+                    accessibilityLayer
+                    data={chartData}
+                    margin={{
+                      left: 12,
+                      right: 12,
+                    }}
+                  >
+                    <CartesianGrid vertical={false} />
+                    <XAxis
+                      dataKey="month"
+                      tickLine={false}
+                      axisLine={false}
+                      tickMargin={8}
+                      tickFormatter={(value) => value.slice(0, 3)}
                     />
-                  </LineChart>
-                </ResponsiveContainer>
+                    <ChartTooltip
+                      cursor={false}
+                      content={<ChartTooltipContent indicator="dot" />}
+                    />
+                    <Area
+                      dataKey="mobile"
+                      type="natural"
+                      fill="var(--color-mobile)"
+                      fillOpacity={0.4}
+                      stroke="var(--color-mobile)"
+                      stackId="a"
+                    />
+                    <Area
+                      dataKey="desktop"
+                      type="natural"
+                      fill="var(--color-desktop)"
+                      fillOpacity={0.4}
+                      stroke="var(--color-desktop)"
+                      stackId="a"
+                    />
+                  </AreaChart>
+                </ChartContainer>
               </CardContent>
+              <CardFooter>
+                <div className="flex w-full items-start gap-2 text-sm">
+                  <div className="grid gap-2">
+                    <div className="flex items-center gap-2 font-medium leading-none">
+                      Trending up by 5.2% this month{" "}
+                      <TrendingUp className="h-4 w-4" />
+                    </div>
+                    <div className="flex items-center gap-2 leading-none text-muted-foreground">
+                      January - June 2024
+                    </div>
+                  </div>
+                </div>
+              </CardFooter>
             </Card>
+
             <Card>
               <CardHeader>
                 <CardTitle>Asset Allocation</CardTitle>
               </CardHeader>
-              <CardContent className="h-[300px]">
-                <ResponsiveContainer width="100%" height="100%">
+              <CardContent>
+                <ResponsiveContainer width="100%" height={300}>
                   <PieChart>
                     <Pie
                       data={data.assetAllocation}
@@ -286,114 +344,114 @@ export default function Dashboard() {
                       cy="50%"
                       labelLine={false}
                       outerRadius={80}
-                      fill="#8884d8"
+                      fill="hsl(var(--primary))"
                       dataKey="value"
-                      label={({ name, percent }) =>
-                        `${name} ${(percent * 100).toFixed(0)}%`
-                      }
                     >
                       {data.assetAllocation.map((entry, index) => (
                         <Cell
                           key={`cell-${index}`}
-                          fill={COLORS[index % COLORS.length]}
+                          fill={`hsl(var(--chart-${index + 1}))`}
                         />
                       ))}
                     </Pie>
                     <Tooltip />
+                    <Legend />
                   </PieChart>
                 </ResponsiveContainer>
               </CardContent>
             </Card>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Recent Transactions</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Date</TableHead>
-                      <TableHead>Description</TableHead>
-                      <TableHead>Amount</TableHead>
-                      <TableHead>Type</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {data.recentTransactions
-                      .slice(0, 5)
-                      .map((transaction, index) => (
-                        <TableRow key={index}>
-                          <TableCell>{transaction.date}</TableCell>
-                          <TableCell>{transaction.description}</TableCell>
-                          <TableCell
-                            className={
-                              transaction.amount < 0
-                                ? "text-red-500"
-                                : "text-green-500"
+          <Card className="mt-6">
+            <CardHeader>
+              <CardTitle>Recent Transactions</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Date</TableHead>
+                    <TableHead>Description</TableHead>
+                    <TableHead>Amount</TableHead>
+                    <TableHead>Type</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {data.recentTransactions
+                    .slice(0, 5)
+                    .map((transaction, index) => (
+                      <TableRow key={index}>
+                        <TableCell>{transaction.date}</TableCell>
+                        <TableCell>{transaction.description}</TableCell>
+                        <TableCell>
+                          ${Math.abs(transaction.amount).toLocaleString()}
+                        </TableCell>
+                        <TableCell>
+                          <Badge
+                            variant={
+                              transaction.type === "Income"
+                                ? "default"
+                                : "secondary"
                             }
                           >
-                            ${Math.abs(transaction.amount).toLocaleString()}
-                          </TableCell>
-                          <TableCell>{transaction.type}</TableCell>
-                        </TableRow>
-                      ))}
-                  </TableBody>
-                </Table>
-              </CardContent>
-            </Card>
+                            {transaction.type}
+                          </Badge>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
 
-            <Card>
-              <CardHeader>
-                <CardTitle>Quick Add Transaction</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <form onSubmit={handleSubmit} className="space-y-4">
-                  <Input
-                    type="date"
-                    name="date"
-                    value={newTransaction.date}
-                    onChange={handleInputChange}
-                    required
-                  />
-                  <Input
-                    type="text"
-                    name="description"
-                    placeholder="Description"
-                    value={newTransaction.description}
-                    onChange={handleInputChange}
-                    required
-                  />
-                  <Input
-                    type="number"
-                    name="amount"
-                    placeholder="Amount"
-                    value={newTransaction.amount}
-                    onChange={handleInputChange}
-                    required
-                  />
-                  <Select
-                    name="type"
-                    onValueChange={(value) =>
-                      setNewTransaction({ ...newTransaction, type: value })
-                    }
-                    required
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Transaction Type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Income">Income</SelectItem>
-                      <SelectItem value="Expense">Expense</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <Button type="submit">Add Transaction</Button>
-                </form>
-              </CardContent>
-            </Card>
-          </div>
+          <Card className="mt-6">
+            <CardHeader>
+              <CardTitle>Quick Add Transaction</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <Input
+                  type="date"
+                  name="date"
+                  value={newTransaction.date}
+                  onChange={handleInputChange}
+                  required
+                />
+                <Input
+                  type="text"
+                  name="description"
+                  placeholder="Description"
+                  value={newTransaction.description}
+                  onChange={handleInputChange}
+                  required
+                />
+                <Input
+                  type="number"
+                  name="amount"
+                  placeholder="Amount"
+                  value={newTransaction.amount}
+                  onChange={handleInputChange}
+                  required
+                />
+                <Select
+                  name="type"
+                  value={newTransaction.type}
+                  onValueChange={(value) =>
+                    setNewTransaction({ ...newTransaction, type: value })
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select transaction type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Income">Income</SelectItem>
+                    <SelectItem value="Expense">Expense</SelectItem>
+                  </SelectContent>
+                </Select>
+                <Button type="submit">Add Transaction</Button>
+              </form>
+            </CardContent>
+          </Card>
         </div>
       </main>
     </div>

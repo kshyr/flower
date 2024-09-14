@@ -3,6 +3,7 @@ import { HashRouter, Route, Routes } from "react-router-dom";
 import logo from "./assets/images/logo-universal.png";
 import { Greet } from "../wailsjs/go/main/App";
 import Dashboard from "./components/dashboard";
+import { ThemeProvider } from "./components/theme-provider";
 
 function App() {
   const [resultText, setResultText] = useState(
@@ -17,11 +18,13 @@ function App() {
   }
 
   return (
-    <HashRouter future={{ v7_startTransition: true }}>
-      <Routes>
-        <Route path="/" element={<Dashboard />} />
-      </Routes>
-    </HashRouter>
+    <ThemeProvider storageKey="theme">
+      <HashRouter future={{ v7_startTransition: true }}>
+        <Routes>
+          <Route path="/" element={<Dashboard />} />
+        </Routes>
+      </HashRouter>
+    </ThemeProvider>
   );
 }
 

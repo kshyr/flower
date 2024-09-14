@@ -1,6 +1,7 @@
 .DEFAULT_GOAL := cli-debug
 
 RUN_GUI = cd cmd/flower && wails dev
+BUILD_GUI = cd cmd/flower && wails build
 RUN_CLI = go run ./cmd/flwr $(ARGS)
 
 gui: gui-debug
@@ -17,3 +18,6 @@ gui-release:
 
 cli-release:
 	$(RUN_CLI)
+
+gui-build:
+	$(BUILD_GUI)
