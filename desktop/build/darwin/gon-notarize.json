@@ -1,0 +1,15 @@
+{
+  "notarize": [
+    {
+      "path": "./bin/flower_darwin-amd64.zip",
+      "bundle_id": "com.kshyr.flower"
+    },
+    {
+      "path": "./flower_darwin-arm64.zip",
+      "bundle_id": "com.kshyr.flower"
+    }
+  ],
+  "apple_id": {
+    "password": "@env:APPLE_PASSWORD"
+  }
+}

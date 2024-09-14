@@ -31,16 +31,6 @@ jobs:
       - name: Install Wails
         run: go install github.com/wailsapp/wails/v2/cmd/wails@latest
 
-      - name: Build Wails (MacOS)
-        working-directory: desktop
-        run: wails build -platform darwin/universal
-
-      - name: Prepare binaries for upload
-        run: |
-          mkdir bin
-          mv desktop/build/bin/flower.app/Contents/MacOS/flower bin/flower_macos
-          chmod +x bin/*
-
       - name: Import Code Signing Certificates for MacOS
         uses: apple-actions/import-codesign-certs@v3
         with:
@@ -51,24 +41,29 @@ jobs:
         run: |
           brew install Bearer/tap/gon
 
-      - name: Create gon config file
+      - name: Build and Sign MacOS Binaries
+        env:
+          APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
         run: |
-          echo '${{ secrets.GON_CONFIG }}' > gon-sign.json
-
-      - name: Sign MacOS binary
-        run: gon -log-level=info ./gon-sign.json
-
-      - name: Clean up gon config file
-        run: rm gon-sign.json
+          ./scripts/build-macos.sh
 
       - uses: actions/upload-artifact@v4
         with:
-          name: wails-binaries-macos
-          path: desktop/build/bin/*
+          name: flower-macos
+          path: ./bin/flower*.zip
 
-      - name: Upload Release Assets
-        uses: softprops/action-gh-release@v2
+  release:
+    needs: build
+    runs-on: macos-latest
+    steps:
+      - name: Download Release Assets
+        uses: actions/download-artifact@v4
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          generate_release_notes: true
-          files: desktop/build/bin/*
+          name: flower-macos
+      - name: Create Release
+        id: create_release
+        uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          prerelease: false
+          files: ./bin/flower*.zip
