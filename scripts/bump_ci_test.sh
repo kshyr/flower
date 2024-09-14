@@ -26,6 +26,19 @@ wait_for_push() {
         sleep 3
     done
 }
+
+# Function to get the last commit message and update it
+get_updated_commit_message() {
+    local last_message=$(git log -1 --pretty=%B)
+    if [[ $last_message =~ \(([0-9]+)\)$ ]]; then
+        local num=${BASH_REMATCH[1]}
+        local new_num=$((num + 1))
+        echo "${last_message%(*)}($new_num)"
+    else
+        echo "$last_message (1)"
+    fi
+}
+
 last_tag=$(git describe --tags --abbrev=0)
 echo "Last tag: $last_tag"
 
@@ -36,15 +49,17 @@ echo "Current dev number: $dev_number"
 new_dev_number=$((dev_number + 1))
 echo "New dev number: $new_dev_number"
 
+new_commit_message=$(get_updated_commit_message)
 git add .
-git commit -m "ci test($new_dev_number)"
+git commit -m "$new_commit_message"
+
+commit_hash=$(git rev-parse HEAD)
 git push
 
-echo "Waiting for push to complete..."
-sleep 10
+wait_for_push $commit_hash
 
 # Create and push new tag
-new_tag="flower/v0.1.1-dev.$new_dev_number"
+new_tag="flower/v0.1.2-dev.$new_dev_number"
 git tag "$new_tag"
 git push origin "$new_tag"
 
