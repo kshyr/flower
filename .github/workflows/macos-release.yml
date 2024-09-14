@@ -1,4 +1,4 @@
-name: Desktop Release
+name: MacOS Release
 
 on:
   push:
@@ -38,7 +38,29 @@ jobs:
       - name: Prepare binaries for upload
         run: |
           mkdir bin
-          mv desktop/build/bin/flower.app/Contents/MacOS/flower bin/flower_darwin-universal
+          mv desktop/build/bin/flower.app/Contents/MacOS/flower bin/flower_macos
+          chmod +x bin/*
+
+      - name: Import Code Signing Certificates for MacOS
+        uses: apple-actions/import-codesign-certs@v3
+        with:
+          p12-file-base64: ${{ secrets.CERTIFICATES_P12 }}
+          p12-password: ${{ secrets.CERTIFICATES_P12_PASSWORD }}
+
+      - name: MacOS download gon for code signing and app notarization
+        if: matrix.platform == 'macos-latest'
+        run: |
+          brew install Bearer/tap/gon
+
+      - name: Create gon config file
+        run: |
+          echo '${{ secrets.GON_CONFIG }}' > gon-sign.json
+
+      - name: Sign MacOS binary
+        run: gon -log-level=info ./gon-sign.json
+
+      - name: Clean up gon config file
+        run: rm gon-sign.json
 
       - uses: actions/upload-artifact@v4
         with:
