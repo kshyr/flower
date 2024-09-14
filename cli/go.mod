@@ -1,3 +1,3 @@
-module github.com/kshyr/flwr
+module github.com/kshyr/flower/cli
 
 go 1.22.5

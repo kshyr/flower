@@ -19,5 +19,7 @@ gui-release:
 cli-release:
 	$(RUN_CLI)
 
-gui-build:
-	$(BUILD_GUI)
+gui-build-cross:
+	$(BUILD_GUI) -platform darwin/universal
+	$(BUILD_GUI) -platform windows/amd64
+	$(BUILD_GUI) -platform linux/arm64

@@ -1,0 +1,55 @@
+name: Desktop Release
+
+on:
+  push:
+    tags:
+      - "flower/v*"
+
+jobs:
+  build:
+    permissions:
+      contents: write
+
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup GoLang
+        uses: actions/setup-go@v4
+        with:
+          check-latest: true
+          go-version: 1.22.5
+      - run: go version
+
+      - name: Setup NodeJS
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+
+      - name: Install Wails
+        run: go install github.com/wailsapp/wails/v2/cmd/wails@latest
+
+      - name: Build Wails (MacOS)
+        working-directory: desktop
+        run: wails build -platform darwin/universal
+
+      - name: Prepare binaries for upload
+        run: |
+          mkdir bin
+          mv desktop/build/bin/flower.app/Contents/MacOS/flower bin/flower_darwin-universal
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Flower Desktop Release
+          path: |
+            bin/*
+
+      - name: Upload Release Assets
+        uses: softprops/action-gh-release@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          generate_release_notes: true
+          files: |
+            bin/*
