@@ -45,7 +45,7 @@ jobs:
         env:
           APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
         run: |
-          ./scripts/build-macos.sh
+          ./scripts/build_macos.sh
 
       - uses: actions/upload-artifact@v4
         with:
