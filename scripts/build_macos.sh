@@ -10,7 +10,7 @@ gon -log-level=info ./desktop/build/darwin/gon-sign.json
 echo "Zipping Package"
 ditto -c -k --keepParent ./desktop/build/bin/flower.app ./bin/flower_darwin-amd64.zip
 echo "Cleaning up"
-rm -rf ./desktop/build/bin/RiftShare.app
+rm -rf ./desktop/build/bin/flower.app
 
 echo "building on ARM64"
 cd desktop
@@ -21,7 +21,7 @@ gon -log-level=info -log-json ./desktop/build/darwin/gon-sign.json
 echo "Zipping Package"
 ditto -c -k --keepParent ./desktop/build/bin/flower.app ./bin/flower_darwin-arm64.zip
 echo "Cleaning up"
-rm -rf ./desktop/build/bin/RiftShare.app
+rm -rf ./desktop/build/bin/flower.app
 
 echo "Notarizing Zip Files"
 gon -log-level=info ./desktop/build/darwin/gon-notarize.json

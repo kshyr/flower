@@ -2,9 +2,18 @@
   "source": ["./desktop/build/bin/flower.app"],
   "bundle_id": "com.kshyr.flower",
   "apple_id": {
-    "password": "@env:AC_PASSWORD"
+    "username": "@env:AC_USERNAME",
+    "password": "@env:AC_PASSWORD",
+    "provider": "@env:AC_PROVIDER"
   },
   "sign": {
-    "application_identity": "070B1A1B9D9663730ABBCBE6CA53349EA55381A9"
+    "application_identity": "@env:AC_APP_ID"
+  },
+  "dmg": {
+    "output_path": "flower.dmg",
+    "volume_name": "flower"
+  },
+  "zip": {
+    "output_path": "flower.zip"
   }
 }
