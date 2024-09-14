@@ -1,0 +1,21 @@
+project_name: flwr
+
+before:
+  hooks:
+    - go mod tidy
+    - go install github.com/wailsapp/wails/v2/cmd/wails@latest
+    - wails build
+
+builds:
+  - id: desktop
+    dir: desktop
+    binary: flower
+    env:
+      - CGO_ENABLED=1
+    goos:
+      - linux
+      - windows
+      - darwin
+    goarch:
+      - amd64
+      - arm64

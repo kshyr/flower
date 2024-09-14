@@ -1,3 +1,5 @@
-cmd/flower/build/bin
-cmd/flower/frontend/node_modules
-cmd/flower/frontend/dist
+desktop/build/bin
+desktop/frontend/node_modules
+desktop/flower/frontend/dist
+
+dist/

@@ -1,8 +1,8 @@
 .DEFAULT_GOAL := cli-debug
 
-RUN_GUI = cd cmd/flower && wails dev
-BUILD_GUI = cd cmd/flower && wails build
-RUN_CLI = go run ./cmd/flwr $(ARGS)
+RUN_GUI = cd desktop && wails dev
+BUILD_GUI = cd desktop && wails build
+RUN_CLI = cd cli go run . $(ARGS)
 
 gui: gui-debug
 cli: cli-debug
