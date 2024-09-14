@@ -6,6 +6,7 @@ import (
 	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/options"
 	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
+	"github.com/wailsapp/wails/v2/pkg/options/mac"
 )
 
 //go:embed all:frontend/dist
@@ -17,16 +18,26 @@ func main() {
 
 	// Create application with options
 	err := wails.Run(&options.App{
-		Title:  "flower",
-		Width:  1024,
-		Height: 768,
+		Title:     "flower",
+		MinWidth:  600,
+		MinHeight: 384,
 		AssetServer: &assetserver.Options{
 			Assets: assets,
 		},
-		BackgroundColour: &options.RGBA{R: 27, G: 38, B: 54, A: 1},
+		BackgroundColour: &options.RGBA{R: 2, G: 6, B: 23, A: 1},
 		OnStartup:        app.startup,
 		Bind: []interface{}{
 			app,
+		},
+
+		Mac: &mac.Options{
+			TitleBar:             mac.TitleBarHiddenInset(),
+			WebviewIsTransparent: true,
+			WindowIsTranslucent:  false,
+			About: &mac.AboutInfo{
+				Title:   "My Application",
+				Message: "© 2021 Me",
+			},
 		},
 	})
 

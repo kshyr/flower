@@ -60,6 +60,7 @@ import {
 } from "lucide-react";
 import { ModeToggle } from "./mode-toggle";
 import { useTheme } from "./theme-provider";
+import { WindowSetTitle } from "@/lib/runtime";
 
 // Mock data - replace with actual data from Beancount file in a real application
 const initialData = {
@@ -176,7 +177,7 @@ export default function Dashboard() {
   return (
     <div className="flex h-screen max-h-screen bg-background">
       {/* Thin Sidebar Navigation */}
-      <aside className="max-h-screen sticky top-0 w-16 bg-card shadow-md flex flex-col items-center py-4">
+      <aside className="mt-8 max-h-screen sticky top-0 w-16 bg-card shadow-md flex flex-col items-center py-4">
         <div className="mb-8 flex flex-col gap-4">
           <Flower className="h-8 w-8 text-primary" />
         </div>
@@ -189,7 +190,7 @@ export default function Dashboard() {
           ].map((item) => (
             <button
               key={item.id}
-              onClick={() => setActivePage(item.id)}
+              onClick={() => WindowSetTitle(item.id)}
               className={`p-2 rounded-lg ${
                 activePage === item.id
                   ? "bg-accent text-accent-foreground"

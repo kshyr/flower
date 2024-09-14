@@ -18,7 +18,7 @@ function App() {
   }
 
   return (
-    <ThemeProvider storageKey="theme">
+    <ThemeProvider storageKey="vite-ui-theme">
       <HashRouter future={{ v7_startTransition: true }}>
         <Routes>
           <Route path="/" element={<Dashboard />} />
