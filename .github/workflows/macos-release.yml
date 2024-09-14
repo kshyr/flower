@@ -48,7 +48,6 @@ jobs:
           p12-password: ${{ secrets.CERTIFICATES_P12_PASSWORD }}
 
       - name: MacOS download gon for code signing and app notarization
-        if: matrix.platform == 'macos-latest'
         run: |
           brew install Bearer/tap/gon
 
