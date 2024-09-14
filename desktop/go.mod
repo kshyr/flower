@@ -1,4 +1,4 @@
-module c
+module github.com/kshyr/flower
 
 go 1.21
 
