@@ -43,7 +43,8 @@ jobs:
 
       - name: Build and Sign MacOS Binaries
         env:
-          APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
+          AC_USERNAME: ${{ secrets.APPLE_USERNAME }}
+          AC_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
         run: |
           chmod +x ./scripts/build_macos.sh
           ./scripts/build_macos.sh

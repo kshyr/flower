@@ -1,8 +1,8 @@
 {
-  "source": ["./desktop/build/bin/RiftShare.app"],
+  "source": ["./desktop/build/bin/flower.app"],
   "bundle_id": "com.kshyr.flower",
   "apple_id": {
-    "password": "@env:APPLE_PASSWORD"
+    "password": "@env:AC_PASSWORD"
   },
   "sign": {
     "application_identity": "070B1A1B9D9663730ABBCBE6CA53349EA55381A9"
