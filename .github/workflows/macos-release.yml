@@ -46,7 +46,6 @@ jobs:
           AC_USERNAME: ${{ secrets.APPLE_USERNAME }}
           AC_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
           AC_PROVIDER: ${{ secrets.APPLE_TEAM_ID }}
-          AC_APP_ID: ${{ secrets.APPLE_APP_ID }}
         run: |
           chmod +x ./scripts/build_macos.sh
           ./scripts/build_macos.sh

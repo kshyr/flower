@@ -7,7 +7,7 @@
     "provider": "@env:AC_PROVIDER"
   },
   "sign": {
-    "application_identity": "@env:AC_APP_ID"
+    "application_identity": "070B1A1B9D9663730ABBCBE6CA53349EA55381A9"
   },
   "dmg": {
     "output_path": "flower.dmg",
