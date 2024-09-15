@@ -10,10 +10,7 @@
     "application_identity": "070B1A1B9D9663730ABBCBE6CA53349EA55381A9"
   },
   "dmg": {
-    "output_path": "flower.dmg",
+    "output_path": "./bin/flower.dmg",
     "volume_name": "flower"
-  },
-  "zip": {
-    "output_path": "flower.zip"
   }
 }
