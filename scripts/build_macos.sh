@@ -14,7 +14,7 @@ build_for_platform() {
     gon -log-level=info ./build/darwin/gon-sign.json
 
     echo "Zipping Package"
-    ditto -c -k --keepParent ./build/bin/flower.app ../../bin/flower_$output_suffix.zip
+    ditto -c -k --keepParent ./build/bin/flower.app ../bin/flower_$output_suffix.zip
 
     echo "Cleaning up"
     rm -rf ./build/bin/flower.app
