@@ -11,7 +11,8 @@
   ],
   "apple_id": {
     "username": "@env:AC_USERNAME",
-    "password": "@env:AC_PASSWORD"
+    "password": "@env:AC_PASSWORD",
+    "provider": "@env:AC_PROVIDER"
   },
   "sign": {
     "application_identity": "Apple Development: kostya.shirolapov@gmail.com (CFM5AR976A)"
