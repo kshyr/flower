@@ -11,7 +11,7 @@ build_for_platform() {
     wails build -platform $platform -clean
 
     echo "Signing Package"
-    gon -log-level=info ../build/darwin/gon-sign.json
+    gon -log-level=info ./build/darwin/gon-sign.json
 
     echo "Zipping Package"
     ditto -c -k --keepParent ./build/bin/flower.app ../../bin/flower_$output_suffix.zip
@@ -32,8 +32,5 @@ build_for_platform "darwin/amd64" "darwin-amd64"
 # Build for ARM64
 build_for_platform "darwin/arm64" "darwin-arm64"
 
-# Return to the original directory
-cd ..
-
 echo "Notarizing Zip Files"
-gon -log-level=info ./desktop/build/darwin/gon-notarize.json
+gon -log-level=info ./build/darwin/gon-notarize.json
