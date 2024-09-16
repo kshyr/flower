@@ -1,16 +1,19 @@
 {
   "notarize": [
     {
-      "path": "./bin/flower_darwin-amd64.zip",
+      "path": "../bin/flower_darwin-amd64.zip",
       "bundle_id": "com.kshyr.flower"
     },
     {
-      "path": "./bin/flower_darwin-arm64.zip",
+      "path": "../bin/flower_darwin-arm64.zip",
       "bundle_id": "com.kshyr.flower"
     }
   ],
   "apple_id": {
     "username": "@env:AC_USERNAME",
     "password": "@env:AC_PASSWORD"
+  },
+  "sign": {
+    "application_identity": "Apple Development: kostya.shirolapov@gmail.com (CFM5AR976A)"
   }
 }

@@ -1,16 +1,15 @@
 {
-  "source": ["./desktop/build/bin/flower.app"],
+  "source": ["./build/bin/flower.app"],
   "bundle_id": "com.kshyr.flower",
   "apple_id": {
     "username": "@env:AC_USERNAME",
-    "password": "@env:AC_PASSWORD",
-    "provider": "@env:AC_PROVIDER"
+    "password": "@env:AC_PASSWORD"
   },
   "sign": {
-    "application_identity": "070B1A1B9D9663730ABBCBE6CA53349EA55381A9"
+    "application_identity": "Apple Development: kostya.shirolapov@gmail.com (CFM5AR976A)"
   },
   "dmg": {
-    "output_path": "./bin/flower.dmg",
+    "output_path": "../bin/flower.dmg",
     "volume_name": "flower"
   }
 }
