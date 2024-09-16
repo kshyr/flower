@@ -48,8 +48,8 @@ jobs:
           AC_PROVIDER: ${{ secrets.APPLE_TEAM_ID }}
         working-directory: ./desktop
         run: |
-          chmod +x ./scripts/build_macos.sh
-          ./scripts/build_macos.sh
+          chmod +x ../scripts/build_macos.sh
+          ../scripts/build_macos.sh
 
       - uses: actions/upload-artifact@v4
         with:
