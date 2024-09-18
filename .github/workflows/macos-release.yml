@@ -54,14 +54,14 @@ jobs:
 
       - uses: L-Super/create-dmg-actions@v1.0.3
         with:
-          dmg_name: "flower.dmg"
+          dmg_name: "./bin/flower.dmg"
           src_dir: "./desktop/build/bin/flower.app"
 
-      - name: Upload DMG
+      - name: Upload Release Assets
         uses: actions/upload-artifact@v4
         with:
-          name: flower.dmg
-          path: "flower.dmg"
+          name: flower-release
+          path: "bin/"
 
   release:
     needs: build
@@ -69,12 +69,11 @@ jobs:
     steps:
       - name: Download Release Assets
         uses: actions/download-artifact@v4
-        with:
-          name: flower.dmg
+
       - name: Create Release
         id: create_release
         uses: "marvinpinto/action-automatic-releases@latest"
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           prerelease: false
-          files: flower.dmg
+          files: bin/*
