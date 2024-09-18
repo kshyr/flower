@@ -48,6 +48,7 @@ jobs:
           AC_PROVIDER: ${{ secrets.APPLE_TEAM_ID }}
         working-directory: ./desktop
         run: |
+          npm install -g appdmg
           chmod +x ../scripts/build_macos.sh
           ../scripts/build_macos.sh
 
