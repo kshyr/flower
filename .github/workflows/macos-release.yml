@@ -6,7 +6,7 @@ on:
       - "flower/v*"
 
 jobs:
-  build:
+  release:
     permissions:
       contents: write
 
@@ -56,19 +56,6 @@ jobs:
         with:
           dmg_name: "./bin/flower.dmg"
           src_dir: "./desktop/build/bin/flower.app"
-
-      - name: Upload Release Assets
-        uses: actions/upload-artifact@v4
-        with:
-          name: flower-release
-          path: "bin/"
-
-  release:
-    needs: build
-    runs-on: macos-latest
-    steps:
-      - name: Download Release Assets
-        uses: actions/download-artifact@v4
 
       - name: Create release
         env:
