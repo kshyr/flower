@@ -70,10 +70,15 @@ jobs:
       - name: Download Release Assets
         uses: actions/download-artifact@v4
 
-      - name: Create Release
-        id: create_release
-        uses: "marvinpinto/action-automatic-releases@latest"
-        with:
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          prerelease: false
-          files: bin/*
+      - name: Create release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ github.ref_name }}
+        run: |
+          gh release create "$tag" \
+              --repo="$GITHUB_REPOSITORY" \
+              --title="${tag#v}" \
+              --generate-notes \
+              bin/flower_amd64.dmg
+              bin/flower_arm64.dmg
+              bin/flower.dmg
