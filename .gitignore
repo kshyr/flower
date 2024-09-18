@@ -3,3 +3,4 @@ desktop/frontend/node_modules
 desktop/flower/frontend/dist
 
 dist/
+.DS_Store
